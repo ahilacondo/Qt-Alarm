@@ -51,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
     connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(Quit()));
     connect(ui->timeEdit, SIGNAL(editingFinished()), this, SLOT(SetTime()));
-    connect(ui->listAlmBtn, SIGNAL(clicked(QAbstractButton *)), this, SLOT(AddRemoveAlarm(QAbstractButton *)));
+    connect(ui->listAlmBtn, SIGNAL(clicked(QAbstractButton*)), this, SLOT(AddRemoveAlarm(QAbstractButton*)));
     connect(ui->listWidget, SIGNAL(currentRowChanged(int)), this, SLOT(ShowActiveAlarm(int)));
     connect(ui->chkSounds, SIGNAL(clicked()), this, SLOT(OpenDialog()));
     connect(ui->SaveBtn, SIGNAL(clicked()), this, SLOT(SaveAll()));

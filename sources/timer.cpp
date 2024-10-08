@@ -4,7 +4,6 @@
 #include <QDate>
 #include "schedule.h"
 #include "schedulecollection.h"
-#include "fileio.h"
 
 //Constructor
 Timer::Timer(QObject *parent, ScheduleCollection *Collection) : QObject(parent)
