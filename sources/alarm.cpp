@@ -82,7 +82,8 @@ void Alarm::Resume()
 // Establece el volumen de reproducción de audio
 void Alarm::SetVolume(int Volume)
 {
-    Volume = qBound(0, Volume, 100);
+    if (Volume < 0) Volume = 0;
+    if (Volume > 100) Volume = 100;
     media->setAudioOutput(new QAudioOutput);
-    media->audioOutput()->setVolume(Volume / 100.0f);
+    media->audioOutput()->setVolume(Volume / 100.0);
 }

@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 #include "timer.h"
 #include "alarm.h"
-#include "fileio.h"
 #include "schedulecollection.h"
 #include "snooze.h"
 #include <QMessageBox>
@@ -39,9 +38,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     CurAlarm = new Alarm(this);
     TimeKeeper->StartTimer(CurAlarm);
 
-    int Volume = FileIO::LoadVolume();
-    ui->VolumeSlider->setValue(Volume <= 0 ? 50 : Volume);
-    CurAlarm->SetVolume(ui->VolumeSlider->value());
+    CurAlarm->SetVolume(50);
     ui->listAlmBtn->button(QDialogButtonBox::Ok)->setText("&Agregar");
     ui->listAlmBtn->button(QDialogButtonBox::Cancel)->setText("&Quitar");
 
@@ -55,7 +52,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     connect(ui->listWidget, SIGNAL(currentRowChanged(int)), this, SLOT(ShowActiveAlarm(int)));
     connect(ui->chkSounds, SIGNAL(clicked()), this, SLOT(OpenDialog()));
     connect(ui->SaveBtn, SIGNAL(clicked()), this, SLOT(SaveAll()));
-    connect(ui->VolumeSlider, SIGNAL(valueChanged(int)), CurAlarm, SLOT(SetVolume(int)));
     connect(ui->calendarWidget, SIGNAL(clicked(QDate)), this, SLOT(SetCustomDate()));
 }
 
@@ -65,7 +61,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-//Triggered on windows close
+// Se activa al cerrar la ventana
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     event->ignore();
@@ -73,7 +69,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     Quit();
 }
 
-//Initiates a timer for the alarm clocks functioning
+// Inicia un temporizador para el funcionamiento de las alarmas
 void MainWindow::SetupClock()
 {
     QTimer *CurrentTime = new QTimer(this);
@@ -81,7 +77,7 @@ void MainWindow::SetupClock()
     CurrentTime->start(500);
 }
 
-//Saves User set Alarm preferences
+// Guarda las preferencias de la alarma establecidas por el usuario
 void MainWindow::SaveAll()
 {
     Schedule *Active = this->_Schedules->GetSchedule(ui->listWidget->currentRow());
@@ -91,7 +87,7 @@ void MainWindow::SaveAll()
     UpdateListWidget();
 }
 
-//Sets the alarm time for the specific alarm item
+// Establece la hora de la alarma para un elemento específico
 void MainWindow::SetTime()
 {
 
@@ -103,7 +99,7 @@ void MainWindow::SetTime()
     }
 }
 
-// Sets alarm date for the specific alarm item
+// Establece la fecha de la alarma para un elemento específico
 void MainWindow::SetCustomDate()
 {
     if (ui->listWidget->currentIndex().column() != -1)
@@ -118,15 +114,14 @@ void MainWindow::SetCustomDate()
     }
 }
 
-//Quits the application
+// Cierra la aplicación
 void MainWindow::Quit()
 {
     this->_Schedules->Save();
-    FileIO::SaveVolume(ui->VolumeSlider->value());
     qApp->quit();
 }
 
-// Adds or Removes an alarm item
+// Agrega o quita un elemento de alarma
 void MainWindow::AddRemoveAlarm(QAbstractButton *button)
 {
     if (button->text() == "&Agregar")
@@ -144,7 +139,7 @@ void MainWindow::AddRemoveAlarm(QAbstractButton *button)
     }
 }
 
-// Shows preferences for the selected item of alarm items
+// Muestra las preferencias para el elemento seleccionado de alarmas
 void MainWindow::ShowActiveAlarm(int index)
 {
     DisablePanelIfNoSelection();
@@ -161,7 +156,7 @@ void MainWindow::ShowActiveAlarm(int index)
     ui->calendarWidget->setSelectedDate(active->GetCustomDate());
 }
 
-// Checks time with the timer
+// Verifica el tiempo con el temporizador
 void MainWindow::timeCheck()
 {
     SnoozeMenuCheck();
@@ -183,7 +178,7 @@ void MainWindow::UpdateClock()
     }
 }
 
-// Opens the File Select Dialog to choose an audio file for alarm
+// Abre el diálogo de selección de archivo para elegir un archivo de audio para la alarma
 void MainWindow::OpenDialog()
 {
     Schedule *Active = this->_Schedules->GetSchedule(ui->listWidget->currentRow());
@@ -194,7 +189,7 @@ void MainWindow::OpenDialog()
     ui->txtSoundPath->setText(AlarmLocation);
 }
 
-// Opens Snooze on alarm trigger
+// Abre el menú de repetición al activar la alarma
 void MainWindow::SnoozeMenuCheck()
 {
     if (this->CurAlarm->isPlaying() && this->CurAlarm->canResume)
@@ -205,7 +200,7 @@ void MainWindow::SnoozeMenuCheck()
     }
 }
 
-// Display structure of the time and date format
+// Muestra la estructura del formato de hora y fecha
 void MainWindow::displayTimeMode()
 {
     if (_isMilTime)
@@ -220,7 +215,7 @@ void MainWindow::displayTimeMode()
     }
 }
 
-// Populates the alarm items list
+// Poblamos la lista de elementos de alarma
 void MainWindow::PopulateListWidget()
 {
     ui->listWidget->clear();
@@ -232,7 +227,7 @@ void MainWindow::PopulateListWidget()
     ui->listWidget->setCurrentRow(this->_lastDeletedIndex);
 }
 
-// Disables the window controls if not alarm item is selected
+// Desactiva los controles de la ventana si no hay un elemento de alarma seleccionado
 void MainWindow::DisablePanelIfNoSelection()
 {
     if (ui->listWidget->currentRow() == -1)
@@ -250,7 +245,7 @@ void MainWindow::DisablePanelIfNoSelection()
     }
 }
 
-// Updates the alarm items list
+// Actualiza la lista de elementos de alarma
 void MainWindow::UpdateListWidget()
 {
     int index = ui->listWidget->currentRow();

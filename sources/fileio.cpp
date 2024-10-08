@@ -15,7 +15,7 @@ FileIO::FileIO(QObject *parent) : QObject(parent)
 {
 }
 
-// Load Saved Alarm Configurations
+// Carga las configuraciones de alarmas guardadas
 QList<Schedule *> FileIO::LoadConfig()
 {
     if (this->_Settings.value("AlarmCount").isNull())
@@ -51,7 +51,7 @@ QList<Schedule *> FileIO::LoadConfig()
     return scheduleList;
 }
 
-// Saves Modified Alarm Configurations
+// Guarda las configuraciones de alarmas modificadas
 bool FileIO::Save(ScheduleCollection *Collection)
 {
     try
@@ -82,21 +82,21 @@ bool FileIO::Save(ScheduleCollection *Collection)
     return true;
 }
 
-//Load Playback volume
+// Carga el volumen de reproducción
 int FileIO::LoadVolume()
 {
     QSettings settings;
     return settings.value("Volume").toInt();
 }
 
-//Save Playback volume
+// Guarda el volumen de reproducción
 void FileIO::SaveVolume(int vol)
 {
     QSettings settings;
     settings.setValue("Volume", vol);
 }
 
-//Loads Saved Alarm Items
+// Carga los elementos de alarma guardados
 QList<Schedule *> FileIO::LegacyRead()
 {
     QList<Schedule *> convertedSche;
